@@ -19,7 +19,7 @@ class _TelaInicialState extends State<TelaInicial> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tals Principal"),
+        title: Text("Tela principal"),
         backgroundColor: Colors.orange,
       ),
       body: Container(
@@ -31,7 +31,9 @@ class _TelaInicialState extends State<TelaInicial> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TelaSecundaria()),
+                  MaterialPageRoute(
+                    builder: (context) => TelaSecundaria("Luiz Paulo"),
+                  ),
                 );
               },
             ),
