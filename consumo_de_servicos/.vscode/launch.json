@@ -7,7 +7,7 @@
     {
       "name": "consumo_de_servicos",
       "request": "launch",
-      "type": "dart"
+      "type": "dart",
     },
     {
       "name": "consumo_de_servicos (profile mode)",
