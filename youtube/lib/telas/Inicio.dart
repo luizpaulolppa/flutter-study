@@ -1,24 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:youtube/Api.dart';
 import 'package:youtube/model/Video.dart';
+// import 'package:flutter_youtube/flutter_youtube.dart';
 
 class Inicio extends StatefulWidget {
-  const Inicio({Key? key}) : super(key: key);
+  String pesquisa;
+
+  Inicio(this.pesquisa, {Key? key}) : super(key: key);
+  // const Inicio({Key? key}) : super(key: key);
 
   @override
   _InicioState createState() => _InicioState();
 }
 
 class _InicioState extends State<Inicio> {
-  Future<List<Video>> _listarVideos() {
+  Future<List<Video>> _listarVideos(String pesquisa) {
     Api api = Api();
-    return api.pesquisar("");
+    return api.pesquisar(pesquisa);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("chamado 1 - initState");
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("chamado 2 - didChangeDependencies");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print("chamado 4 - dispose");
+  }
+
+  @override
+  void didUpdateWidget(covariant Inicio oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("chamado 5 - didUpdateWidget");
   }
 
   @override
   Widget build(BuildContext context) {
+    print("chamado 3 - build");
     return FutureBuilder<List<Video>>(
-      future: _listarVideos(),
+      future: _listarVideos(widget.pesquisa),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -34,22 +63,33 @@ class _InicioState extends State<Inicio> {
                 itemBuilder: (context, index) {
                   List<Video> videos = snapshot.data!;
                   Video video = videos[index];
-                  return Column(
-                    children: [
-                      Container(
-                        height: 200,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(video.imagem),
+                  return GestureDetector(
+                    onTap: () {
+                      print("====>>>");
+                      // FlutterYoutube.playYoutubeVideoById(
+                      //   apiKey: CHAVE_YOUTUBE_API,
+                      //   videoId: video.id,
+                      //   autoPlay: true,
+                      //   fullScreen: true,
+                      // );
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(video.imagem),
+                            ),
                           ),
                         ),
-                      ),
-                      ListTile(
-                        title: Text(video.titulo),
-                        subtitle: Text(video.canal),
-                      ),
-                    ],
+                        ListTile(
+                          title: Text(video.titulo),
+                          subtitle: Text(video.canal),
+                        ),
+                      ],
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) => Divider(
