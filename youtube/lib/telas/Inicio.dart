@@ -32,14 +32,22 @@ class _InicioState extends State<Inicio> {
             if (snapshot.hasData) {
               return ListView.separated(
                 itemBuilder: (context, index) {
+                  List<Video> videos = snapshot.data!;
+                  Video video = videos[index];
                   return Column(
                     children: [
                       Container(
+                        height: 200,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(snapshot.data![index].imagem),
+                            fit: BoxFit.cover,
+                            image: NetworkImage(video.imagem),
                           ),
                         ),
+                      ),
+                      ListTile(
+                        title: Text(video.titulo),
+                        subtitle: Text(video.canal),
                       ),
                     ],
                   );

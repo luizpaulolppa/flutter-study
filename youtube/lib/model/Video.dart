@@ -29,7 +29,7 @@ class Video {
       json["snippet"]["title"],
       json["snippet"]["description"],
       json["snippet"]["thumbnails"]["high"]["url"],
-      json["snippet"]["channelId"],
+      json["snippet"]["channelTitle"],
     );
   }
 }
