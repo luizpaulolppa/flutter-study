@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -8,7 +12,62 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List _listaTaredas = ["Estudar", '2', '3'];
+  List tasks = [];
+  TextEditingController textController = TextEditingController();
+
+  Future<File> _getFile() async {
+    final diretorio = await getApplicationDocumentsDirectory();
+    return File("${diretorio.path}/data.json");
+  }
+
+  void addTask() async {
+    String text = textController.text;
+    Map<String, dynamic> task = {};
+    task["id"] = DateTime.now().millisecondsSinceEpoch;
+    task["title"] = text;
+    task["isCompleted"] = true;
+    setState(() {
+      tasks.add(task);
+    });
+    textController.text = "";
+    saveFile();
+  }
+
+  void saveFile() async {
+    File file = await _getFile();
+    String content = json.encode(tasks);
+    file.writeAsString(content);
+  }
+
+  Future<String> readFile() async {
+    try {
+      File file = await _getFile();
+      return file.readAsString();
+    } catch (e) {
+      return "";
+    }
+  }
+
+  void loadTasks() {
+    readFile().then((dados) {
+      setState(() {
+        tasks = json.decode(dados);
+      });
+    });
+  }
+
+  void checkTask(int index, bool isCompleted) {
+    setState(() {
+      tasks[index]["isCompleted"] = isCompleted;
+    });
+    saveFile();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadTasks();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +90,7 @@ class _HomeState extends State<Home> {
                   decoration: InputDecoration(
                     labelText: "Digite sua terefa",
                   ),
-                  onChanged: (text) {
-                    print(text);
-                  },
+                  controller: textController,
                 ),
                 actions: [
                   FlatButton(
@@ -42,7 +99,10 @@ class _HomeState extends State<Home> {
                   ),
                   FlatButton(
                     child: Text("Salvar"),
-                    onPressed: () {},
+                    onPressed: () {
+                      addTask();
+                      Navigator.pop(context);
+                    },
                   ),
                 ],
               );
@@ -54,10 +114,22 @@ class _HomeState extends State<Home> {
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _listaTaredas.length,
+              itemCount: tasks.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text("${_listaTaredas[index]}"),
+                String title = tasks[index]["title"];
+                bool isCompleted = tasks[index]["isCompleted"];
+
+                // return ListTile(
+                //   title: Text("${title}"),
+                // );
+
+                return CheckboxListTile(
+                  title: Text("${title}"),
+                  value: isCompleted,
+                  onChanged: (value) {
+                    print(value);
+                    checkTask(index, value!);
+                  },
                 );
               },
             ),
