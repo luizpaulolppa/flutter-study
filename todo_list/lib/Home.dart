@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
     Map<String, dynamic> task = {};
     task["id"] = DateTime.now().millisecondsSinceEpoch;
     task["title"] = text;
-    task["isCompleted"] = true;
+    task["isCompleted"] = false;
     setState(() {
       tasks.add(task);
     });
