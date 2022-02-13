@@ -13,6 +13,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List tasks = [];
+  Map<String, dynamic> lastRemovedTak = {};
   TextEditingController textController = TextEditingController();
 
   Future<File> _getFile() async {
@@ -69,6 +70,57 @@ class _HomeState extends State<Home> {
     loadTasks();
   }
 
+  Widget criarItemLista(BuildContext context, int index) {
+    String title = "${tasks[index]["title"]}";
+    bool isCompleted = tasks[index]["isCompleted"];
+    return Dismissible(
+      key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        setState(() {
+          lastRemovedTak = tasks[index];
+          tasks.removeAt(index);
+        });
+        saveFile();
+
+        final snackbar = SnackBar(
+          content: Text("Tarefa removida"),
+          action: SnackBarAction(
+            label: "Desfazer",
+            onPressed: () {
+              setState(() {
+                tasks.insert(index, lastRemovedTak);
+              });
+              saveFile();
+            },
+          ),
+        );
+
+        Scaffold.of(context).showSnackBar(snackbar);
+      },
+      background: Container(
+        color: Colors.red,
+        padding: EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.delete,
+              color: Colors.white,
+            )
+          ],
+        ),
+      ),
+      child: CheckboxListTile(
+        title: Text(title),
+        onChanged: (value) {
+          checkTask(index, value!);
+        },
+        value: isCompleted,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,23 +167,7 @@ class _HomeState extends State<Home> {
           Expanded(
             child: ListView.builder(
               itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                String title = tasks[index]["title"];
-                bool isCompleted = tasks[index]["isCompleted"];
-
-                // return ListTile(
-                //   title: Text("${title}"),
-                // );
-
-                return CheckboxListTile(
-                  title: Text("${title}"),
-                  value: isCompleted,
-                  onChanged: (value) {
-                    print(value);
-                    checkTask(index, value!);
-                  },
-                );
-              },
+              itemBuilder: criarItemLista,
             ),
           ),
         ],
