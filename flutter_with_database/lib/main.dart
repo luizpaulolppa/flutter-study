@@ -3,9 +3,16 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: Home(),
-  ));
+  runApp(
+    MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("Database"),
+        ),
+        body: const Home(),
+      ),
+    ),
+  );
 }
 
 class Home extends StatefulWidget {
@@ -16,10 +23,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  void recuperarDados() async {
+  Future<Database> getDatabase() async {
     final caminhoDatabase = await getDatabasesPath();
     final localDB = join(caminhoDatabase, "banco.db");
-    var retorno = await openDatabase(
+    var db = await openDatabase(
       localDB,
       version: 1,
       onCreate: (db, bdCurrentVersion) {
@@ -28,12 +35,34 @@ class _HomeState extends State<Home> {
         db.execute(sql);
       },
     );
-    print("Open: " + retorno.isOpen.toString());
+    print("Open: " + db.isOpen.toString());
+    return db;
+  }
+
+  void save() async {
+    Database database = await getDatabase();
+    Map<String, dynamic> dados = {
+      "name": "Paulo",
+      "idade": 32,
+    };
+    int id = await database.insert("usuarios", dados);
+    print("ID salvo: " + id.toString());
+  }
+
+  void listUsers() async {
+    Database database = await getDatabase();
+    String sql = "SELECT * FROM usuarios";
+    List<Map<String, Object?>> data = await database.rawQuery(sql);
+    for (var usuario in data) {
+      print(usuario);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    recuperarDados();
+    // getDatabase();
+    // save();
+    listUsers();
     return Container();
   }
 }
