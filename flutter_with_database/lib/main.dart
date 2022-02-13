@@ -35,18 +35,19 @@ class _HomeState extends State<Home> {
         db.execute(sql);
       },
     );
-    print("Open: " + db.isOpen.toString());
+    // print("Open: " + db.isOpen.toString());
     return db;
   }
 
-  void save() async {
+  Future<int> addUser(String nome, int idade) async {
     Database database = await getDatabase();
     Map<String, dynamic> dados = {
-      "name": "Paulo",
-      "idade": 32,
+      "name": nome,
+      "idade": idade,
     };
     int id = await database.insert("usuarios", dados);
-    print("ID salvo: " + id.toString());
+    print("==> id salvo: " + id.toString());
+    return id;
   }
 
   void listUsers() async {
@@ -72,12 +73,75 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void deleteUserById(int id) async {
+    Database database = await getDatabase();
+    String sql = "SELECT * FROM usuarios";
+    await database.delete(
+      "usuarios",
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  void clearUsers() async {
+    Database database = await getDatabase();
+    await database.delete(
+      "usuarios",
+    );
+  }
+
+  void updateUserById(int id) async {
+    Database database = await getDatabase();
+
+    Map<String, dynamic> dados = {
+      "name": "Sei lá",
+      "idade": 33,
+    };
+
+    int retorno = await database.update(
+      "usuarios",
+      dados,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+
+    print("Quantidade de usuários atualizados: " + retorno.toString());
+  }
+
+  void init() async {
+    print("===> INIT <===");
+    clearUsers();
+
+    int anaId = await addUser("Ana Carla Pilegi", 25);
+    int luizId = await addUser("Luiz Paulo Pilegi", 27);
+    // await addUser("Carlos Roberto", 50);
+    // await addUser("Rosemere Pilegi", 50);
+
+    // print("===> Listando usuários");
+    // listUsers();
+
+    // print("===> Procurando Ana");
+    // getUserById(anaId);
+    // print("===> Procurando Luiz");
+    // getUserById(luizId);
+
+    // print("===> Deletando Ana");
+    // deleteUserById(anaId);
+    // print("===> Deletando Luiz");
+    // deleteUserById(luizId);
+
+    print("===> Listando usuários");
+    listUsers();
+
+    updateUserById(luizId);
+
+    print("===> Listando usuários");
+    listUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // getDatabase();
-    // save();
-    // listUsers();
-    getUserById(1);
+    init();
     return Container();
   }
 }
