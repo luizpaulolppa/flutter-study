@@ -58,11 +58,26 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void getUserById(int id) async {
+    Database database = await getDatabase();
+    String sql = "SELECT * FROM usuarios";
+    List usuarios = await database.query(
+      "usuarios",
+      columns: ["id", "name", "idade"],
+      where: "id = ?",
+      whereArgs: [id],
+    );
+    for (var usuario in usuarios) {
+      print(usuario);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // getDatabase();
     // save();
-    listUsers();
+    // listUsers();
+    getUserById(1);
     return Container();
   }
 }
