@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_notes/helper/AnotacaoHelper.dart';
+import 'package:my_notes/model/Anotacao.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -8,10 +10,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var db = AnotacaoHelper();
   TextEditingController tituloController = TextEditingController();
   TextEditingController descricaoController = TextEditingController();
 
   showTelaCadastro() {
+    tituloController.text = "";
+    descricaoController.text = "";
     showDialog(
       context: context,
       builder: (context) {
@@ -44,9 +49,9 @@ class _HomeState extends State<Home> {
               child: const Text("Cancelar"),
             ),
             FlatButton(
-              onPressed: () => {
-                //Salvar
-                Navigator.pop(context)
+              onPressed: () {
+                salvarAnotacao();
+                Navigator.pop(context);
               },
               child: const Text("Salvar"),
             ),
@@ -54,6 +59,18 @@ class _HomeState extends State<Home> {
         );
       },
     );
+  }
+
+  salvarAnotacao() async {
+    String titulo = tituloController.text;
+    String descricao = descricaoController.text;
+    Anotacao anotacao = Anotacao(
+      titulo,
+      descricao,
+      DateTime.now().toString(),
+    );
+    int resultado = await db.salvarAnotacao(anotacao);
+    print(resultado);
   }
 
   @override
@@ -67,7 +84,7 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           showTelaCadastro();
         },
