@@ -73,8 +73,14 @@ class _HomeState extends State<Home> {
     print(resultado);
   }
 
+  recuperarAnotacao() async {
+    List anotacoesRecuperadas = await db.recuperarAnotacoes();
+    print(anotacoesRecuperadas);
+  }
+
   @override
   Widget build(BuildContext context) {
+    recuperarAnotacao();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Minhas anotações"),

@@ -49,4 +49,11 @@ class AnotacaoHelper {
     int id = await database.insert(nomeTabela, anotacao.toMap());
     return id;
   }
+
+  recuperarAnotacoes() async {
+    Database bancoDados = await db;
+    String sql = "SELECT * FROM $nomeTabela ORDER BY data";
+    List anotacoes = await bancoDados.rawQuery(sql);
+    return anotacoes;
+  }
 }
