@@ -16,15 +16,27 @@ class _HomeState extends State<Home> {
   List<Anotacao> anotacoes = [];
   TextEditingController tituloController = TextEditingController();
   TextEditingController descricaoController = TextEditingController();
+  String textoSalvarAtualizar = "";
 
-  showTelaCadastro() {
-    tituloController.text = "";
-    descricaoController.text = "";
+  showTelaCadastro(Anotacao? anotacao) {
+    if (anotacao == null) {
+      tituloController.text = "";
+      descricaoController.text = "";
+      setState(() {
+        textoSalvarAtualizar = "Salvar";
+      });
+    } else {
+      tituloController.text = anotacao.titulo!;
+      descricaoController.text = anotacao.descricao!;
+      setState(() {
+        textoSalvarAtualizar = "Atualizar";
+      });
+    }
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Adicionar anotação"),
+          title: Text("$textoSalvarAtualizar anotação"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -53,10 +65,10 @@ class _HomeState extends State<Home> {
             ),
             FlatButton(
               onPressed: () {
-                salvarAnotacao();
+                salvarAnotacao(anotacao);
                 Navigator.pop(context);
               },
-              child: const Text("Salvar"),
+              child: Text(textoSalvarAtualizar),
             ),
           ],
         );
@@ -64,20 +76,25 @@ class _HomeState extends State<Home> {
     );
   }
 
-  salvarAnotacao() async {
+  salvarAnotacao(Anotacao? anotacaoSelecionada) async {
     String titulo = tituloController.text;
     String descricao = descricaoController.text;
-    Anotacao anotacao = Anotacao(
-      titulo,
-      descricao,
-      DateTime.now().toString(),
-    );
-    int resultado = await db.salvarAnotacao(anotacao);
-    print(resultado);
-    await recuperarAnotacao();
+    String dateNow = DateTime.now().toString();
+
+    if (anotacaoSelecionada == null) {
+      Anotacao anotacao = Anotacao(titulo, descricao, dateNow);
+      await db.salvarAnotacao(anotacao);
+    } else {
+      anotacaoSelecionada.titulo = titulo;
+      anotacaoSelecionada.descricao = descricao;
+      anotacaoSelecionada.data = dateNow;
+      await db.atualizarAnotacao(anotacaoSelecionada);
+    }
+
+    await recuperarAnotacoes();
   }
 
-  recuperarAnotacao() async {
+  recuperarAnotacoes() async {
     List anotacoesRecuperadas = await db.recuperarAnotacoes();
 
     List<Anotacao> tempList = [];
@@ -93,7 +110,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    recuperarAnotacao();
+    recuperarAnotacoes();
   }
 
   String formatarData(String? dataStr) {
@@ -126,6 +143,33 @@ class _HomeState extends State<Home> {
                     title: Text("${note.titulo}"),
                     subtitle:
                         Text("${formatarData(note.data)} - ${note.descricao}"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showTelaCadastro(note);
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 0),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.only(left: 16),
+                            child: Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -138,7 +182,7 @@ class _HomeState extends State<Home> {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
         onPressed: () {
-          showTelaCadastro();
+          showTelaCadastro(null);
         },
       ),
     );

@@ -50,6 +50,17 @@ class AnotacaoHelper {
     return id;
   }
 
+  Future<int> atualizarAnotacao(Anotacao anotacao) async {
+    Database database = await db;
+    int id = await database.update(
+      nomeTabela,
+      anotacao.toMap(),
+      where: "id = ?",
+      whereArgs: [anotacao.id],
+    );
+    return id;
+  }
+
   recuperarAnotacoes() async {
     Database bancoDados = await db;
     String sql = "SELECT * FROM $nomeTabela ORDER BY data DESC";
