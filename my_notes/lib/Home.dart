@@ -100,7 +100,7 @@ class _HomeState extends State<Home> {
     if (dataStr == null) return "";
 
     initializeDateFormatting("pt_BR");
-    var formatador = DateFormat("y/M/d");
+    var formatador = DateFormat("dd/MM/yyyy");
     DateTime dataConvertida = DateTime.parse(dataStr);
     String dataFormatada = formatador.format(dataConvertida);
     return dataFormatada;
