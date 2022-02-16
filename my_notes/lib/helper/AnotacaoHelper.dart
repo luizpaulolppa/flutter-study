@@ -61,6 +61,15 @@ class AnotacaoHelper {
     return id;
   }
 
+  removerAnotacao(int anotacaoId) async {
+    Database database = await db;
+    await database.delete(
+      nomeTabela,
+      where: "id = ?",
+      whereArgs: [anotacaoId],
+    );
+  }
+
   recuperarAnotacoes() async {
     Database bancoDados = await db;
     String sql = "SELECT * FROM $nomeTabela ORDER BY data DESC";

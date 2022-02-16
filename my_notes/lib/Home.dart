@@ -107,6 +107,11 @@ class _HomeState extends State<Home> {
     });
   }
 
+  removerAnotacao(int anotacaoId) async {
+    await db.removerAnotacao(anotacaoId);
+    await recuperarAnotacoes();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -159,7 +164,9 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            removerAnotacao(note.id!);
+                          },
                           child: const Padding(
                             padding: EdgeInsets.only(left: 16),
                             child: Icon(
