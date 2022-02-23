@@ -28,7 +28,7 @@ class _HomeState extends State<Home> {
               child: Observer(
                 builder: (_) {
                   return Text(
-                    "${controller.contador.value}",
+                    "${controller.contador}",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 80,
