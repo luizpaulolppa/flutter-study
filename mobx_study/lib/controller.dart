@@ -1,17 +1,30 @@
+// import 'package:mobx/mobx.dart';
+
 import 'package:mobx/mobx.dart';
+part 'controller.g.dart';
 
-class Controller {
-  var _contador = Observable<int>(0);
-  Action? incrementar;
+class Controller = ControllerBase with _$Controller;
 
-  Controller() {
-    incrementar = Action(_incrementar);
+abstract class ControllerBase with Store {
+  @observable
+  int contador = 0;
+
+  @action
+  incrementar() {
+    contador++;
   }
 
-  int get contador => _contador.value;
-  set contador(int valor) => _contador.value = valor;
+  // var _contador = Observable<int>(0);
+  // Action? incrementar;
 
-  _incrementar() {
-    contador = contador + 1;
-  }
+  // Controller() {
+  //   incrementar = Action(_incrementar);
+  // }
+
+  // int get contador => _contador.value;
+  // set contador(int valor) => _contador.value = valor;
+
+  // _incrementar() {
+  //   contador = contador + 1;
+  // }
 }
