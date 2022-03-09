@@ -11,16 +11,35 @@ class ResposividadeMediaQuery extends StatefulWidget {
 class _ResposividadeMediaQueryState extends State<ResposividadeMediaQuery> {
   @override
   Widget build(BuildContext context) {
+    var largura = MediaQuery.of(context).size.width;
+    var altura = MediaQuery.of(context).size.height;
+    var alturaBarraStatus = MediaQuery.of(context).padding.top;
+    var AlturaAppBar = AppBar().preferredSize.height;
+    var larguraItem = largura / 3;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Responsividade'),
       ),
-      body: Column(
+      body: Row(
         children: [
           Container(
-            width: 100,
-            height: 100,
-            color: Colors.blue,
+            width: larguraItem,
+            height: altura - AlturaAppBar - alturaBarraStatus,
+            color: Colors.red,
+            child: Text("Responsividade"),
+          ),
+          Container(
+            width: larguraItem,
+            height: altura - AlturaAppBar - alturaBarraStatus,
+            color: Colors.black,
+            child: Text("Responsividade"),
+          ),
+          Container(
+            width: larguraItem,
+            height: altura - AlturaAppBar - alturaBarraStatus,
+            color: Colors.yellow,
+            child: Text("Responsividade"),
           ),
         ],
       ),
