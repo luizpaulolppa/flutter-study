@@ -1,4 +1,4 @@
-package com.example.cara_ou_coroa
+package com.luizpilegilppa.cursoflutter.cara_ou_coroa
 
 import io.flutter.embedding.android.FlutterActivity
 
