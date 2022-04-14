@@ -12,4 +12,10 @@ class CarroEntity {
   double get valorReal {
     return valor * qtdPortas;
   }
+
+  setLogica() {
+    if (valorReal > 10000.00) {
+      valor *= 2;
+    }
+  }
 }
