@@ -1,15 +1,15 @@
+import 'package:architecture/layers/data/datasources/get_carros_por_cor_datasource.dart';
+
 import '../../domain/entities/carro_entity.dart';
 import '../../domain/repositories/get_carro_por_cor_repository.dart';
-import '../dto/carro_dto.dart';
 
 class GetCarroPorCorRepositoryImp implements GetCarroPorCorRepository {
+  final GetCarrosPorCorDataSource _getCarrosPorCorDataSource;
+
+  GetCarroPorCorRepositoryImp(this._getCarrosPorCorDataSource);
+
   @override
   CarroEntity call(String cor) {
-    var json = {
-      "placa": "SSS123",
-      "quantidadeDePortas": 10,
-      "valorFinal": 10.00,
-    };
-    return CarroDto.fromMap(json);
+    return _getCarrosPorCorDataSource(cor);
   }
 }
