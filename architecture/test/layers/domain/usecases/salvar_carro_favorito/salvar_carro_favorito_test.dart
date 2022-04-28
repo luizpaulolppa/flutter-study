@@ -1,22 +1,15 @@
+import 'package:architecture/layers/data/repositories/salvar_carro_favorito_repository_imp.dart';
 import 'package:architecture/layers/domain/entities/carro_entity.dart';
-import 'package:architecture/layers/domain/repositories/salvar_carro_favorito_repository.dart';
 import 'package:architecture/layers/domain/usecases/salvar_carro_favorito/salvar_carro_favorito_usecase.dart';
 import 'package:architecture/layers/domain/usecases/salvar_carro_favorito/salvar_carro_favorito_usecase_imp.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class SalvarCarroFavoritoRepositoryImp
-    implements SalvarCarroFavoritoRepository {
-  @override
-  Future<bool> call(CarroEntity carroEntity) async {
-    return carroEntity.valor > 0;
-  }
-}
-
 main() {
   test("Espero que salve o carro com sucesso quando o valor for maior que 0",
       () async {
-    SalvarCarroFavoritoUseCase useCase =
-        SalvarCarroFavoritoUseCaseImp(SalvarCarroFavoritoRepositoryImp());
+    SalvarCarroFavoritoUseCase useCase = SalvarCarroFavoritoUseCaseImp(
+      SalvarCarroFavoritoRepositoryImp(),
+    );
 
     CarroEntity carroEntity = CarroEntity(
       placa: "AAA123",
@@ -25,8 +18,14 @@ main() {
     );
 
     var result = await useCase(carroEntity);
+    late bool resultExpect;
 
-    expect(result, true);
+    result.fold(
+      (l) => null,
+      (r) => resultExpect = r,
+    );
+
+    expect(resultExpect, true);
   });
 
   test("Espero que não salve o carro quando o valor for menor ou igual a 0",
@@ -41,7 +40,13 @@ main() {
     );
 
     var result = await useCase(carroEntity);
+    late bool resultExpect;
 
-    expect(result, false);
+    result.fold(
+      (l) => null,
+      (r) => resultExpect = r,
+    );
+
+    expect(resultExpect, false);
   });
 }

@@ -16,7 +16,11 @@ class CarroController {
   }
 
   getCarrosPorCor(String cor) {
-    carro = _getCarrosPorCorUseCase(cor);
+    var result = _getCarrosPorCorUseCase(cor);
+    result.fold(
+      (error) => print(error.toString()),
+      (success) => carro = success,
+    );
   }
 
   salvarCarroFavorito(CarroEntity carroEntity) async {

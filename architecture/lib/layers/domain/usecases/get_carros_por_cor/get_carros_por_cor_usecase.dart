@@ -1,5 +1,6 @@
 import 'package:architecture/layers/domain/entities/carro_entity.dart';
+import 'package:dartz/dartz.dart';
 
 abstract class GetCarrosPorCorUseCase {
-  CarroEntity call(String cor);
+  Either<Exception, CarroEntity> call(String cor);
 }
